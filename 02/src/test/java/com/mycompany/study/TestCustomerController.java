@@ -1,30 +1,24 @@
 package com.mycompany.study;
 
-import com.mycompany.study.dao.CustomerDao;
 import com.mycompany.study.entity.Customer;
 import com.mycompany.study.web.CustomerController;
-import org.junit.Assert;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.annotation.Resource;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 /**
  * Created by Administrator on 2014/10/20.
@@ -35,8 +29,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 //@SpringApplicationConfiguration
 public class TestCustomerController {
 
-    @Resource
-    private CustomerDao customerDao;
     @Resource
     private CustomerController customerController;
 
@@ -51,23 +43,39 @@ public class TestCustomerController {
     }
 
     @Test
-    public void test1get(){
+    public void test1FromRepository() throws Exception {
+        MockMvcBuilders.standaloneSetup(customerController)
+                        .build()
+                        .perform(MockMvcRequestBuilders.get("/customers/{id}", 1))
+                        .andExpect(MockMvcResultMatchers.status().isOk())
+                        .andExpect(MockMvcResultMatchers.content().contentType(MyMediaType.APPLICATION_JSON_UTF8))
+                        .andExpect(MockMvcResultMatchers.jsonPath("id", Matchers.is(1)))
+                        .andExpect(MockMvcResultMatchers.jsonPath("name", Matchers.is("Lindsey Craft")))
+                        .andExpect(MockMvcResultMatchers.jsonPath("age", Matchers.is(26)));
+//              .andExpect(MockMvcResultMatchers.content().string("{\"id\":1,\"name\":\"Lindsey Craft\",\"age\":26}"));
     }
 
     @Test
-    public void testLoginView() throws Exception {
+    public void test2ByMockito() throws Exception {
+        Customer mockCustomer = new Customer();
+        mockCustomer.setId(101);
+        mockCustomer.setName("mock");
+        mockCustomer.setAge(1);
 
-        //http://javasee.iteye.com/blog/1000868
-        //https://www.jiwhiz.com/#/blogs/5352ebb8352eb40d58180a55
-        when(customerDao.findOne(1)).thenReturn(customerDao.findOne(1));
+        CustomerController mockController = Mockito.mock(CustomerController.class);
 
-        MvcResult result = mockMvc.perform(get("/customers/{id}",1))
+        //http://mockito.org/
+        //http://code.google.com/p/mockito/
+        when(mockController.get(1)).thenReturn(mockCustomer);
+
+        MockMvcBuilders.standaloneSetup(mockController)// test the AccountsController class in isolation
+                .build()
+                .perform(MockMvcRequestBuilders.get("/customers/{id}", 1))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-//                .andExpect(MockMvcResultMatchers.view().name("accounts/login"))
-//                .andExpect(MockMvcResultMatchers.forwardedUrl("accounts/login"))
-                .andReturn();
-        result.getResponse().getContentAsString();
-        Assert.assertNotNull(result);
+                .andExpect(MockMvcResultMatchers.content().contentType(MyMediaType.APPLICATION_JSON_UTF8))
+                .andExpect(MockMvcResultMatchers.jsonPath("id", Matchers.is(101)))
+                .andExpect(MockMvcResultMatchers.jsonPath("name", Matchers.is("mock")))
+                .andExpect(MockMvcResultMatchers.jsonPath("age", Matchers.is(1)));
     }
 
 }
