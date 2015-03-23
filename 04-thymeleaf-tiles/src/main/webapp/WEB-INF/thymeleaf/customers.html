@@ -1,0 +1,20 @@
+<h1>Customer List</h1>
+<div th:if="${#lists.isEmpty(customers)}">
+    Table is empty.
+</div>
+<div th:if="${not #lists.isEmpty(customers)}">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Age</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="c : ${customers}">
+                <td th:text="${c.name}">Jack</td>
+                <td th:text="${c.age}">25</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
