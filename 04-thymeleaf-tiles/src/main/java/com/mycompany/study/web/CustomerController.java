@@ -52,6 +52,22 @@ public class CustomerController {
         return "tiles/thymeleafLayout";
     }
 
+    @RequestMapping(value = "/thymeleafLayout/demo1", method= RequestMethod.GET)
+    public String thymeleafLayoutDemo1(Model model){
+        model.addAttribute("customers", getCustomers());
+        return "thymeleaf/common2/content1";
+    }
+    @RequestMapping(value = "/thymeleafLayout/demo2", method= RequestMethod.GET)
+    public String thymeleafLayoutDemo2(Model model){
+        model.addAttribute("customers", getCustomers());
+        return "thymeleaf/common2/content2";
+    }
+    @RequestMapping(value = "/thymeleafLayout/demo3", method= RequestMethod.GET)
+    public String thymeleafLayoutDemo3(Model model){
+        model.addAttribute("customers", getCustomers());
+        return "thymeleaf/common2/footer1";
+    }
+
     private List<Customer> getCustomers(){
         List<Customer> customerList = new ArrayList<>();
         for (int i = 1; i <= 5; i++) {

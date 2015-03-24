@@ -48,6 +48,7 @@
         <property name="additionalDialects">
             <set>
                 <bean class="org.thymeleaf.extras.tiles2.dialect.TilesDialect"/>
+                <bean class="nz.net.ultraq.thymeleaf.LayoutDialect"/>
             </set>
         </property>
     </bean>
