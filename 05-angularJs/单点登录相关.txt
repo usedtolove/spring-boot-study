@@ -1,0 +1,5 @@
+http://www.blogjava.net/xcp/archive/2010/04/13/318125.html
+
+http://stackoverflow.com/questions/5365054/integrate-single-sign-on-using-spring-security
+
+https://github.com/spring-guides/tut-spring-security-and-angular-js/blob/master/basic/README.adoc#add-a-home-page
